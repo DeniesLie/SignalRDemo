@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace DeviceBackEnd.LiveTerminalConnection;
+namespace DeviceBackEnd.Services;
 
 public class LiveTerminalService
 {
@@ -31,7 +31,7 @@ public class LiveTerminalService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Connection failed");
+            _logger.LogError($"Connection failed: {ex}");
         }
     }
 
@@ -43,7 +43,7 @@ public class LiveTerminalService
         }
         catch (Exception ex)
         {
-            _logger.LogError("Failed to send stdOut");
+            _logger.LogError($"Failed to send stdOut: {ex}");
         }
     }
 }

@@ -1,4 +1,4 @@
-using DeviceBackEnd.LiveTerminalConnection;
+using DeviceBackEnd.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
