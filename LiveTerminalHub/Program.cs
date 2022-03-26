@@ -17,4 +17,4 @@ app.UseHttpsRedirection();
 app.MapHub<TerminalHub>("/terminal");
 app.MapGet("/test", () => "It works!");
 
-app.Run("https://localhost:5000");
+app.Run("http://localhost:5000");
