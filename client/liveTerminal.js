@@ -1,5 +1,5 @@
 var connection = new signalR.HubConnectionBuilder()
-    .withUrl("https://34.125.199.21:7046/terminal");
+    .withUrl("https://webapp-220326221938.azurewebsites.net/terminal");
 
 var outputWindow = document.getElementById("output");
 

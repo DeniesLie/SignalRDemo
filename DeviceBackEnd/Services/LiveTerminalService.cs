@@ -12,13 +12,15 @@ public class LiveTerminalService
         _logger = logger;
         
         _connection = new HubConnectionBuilder()
-            .WithUrl(configuration["MasterServer:IpAddress"])
+            .WithUrl(configuration["MasterServer:IpAddress"]+"/terminal")
             .WithAutomaticReconnect()
             .Build();
 
-        _connection.On<string>("SendStdIn", (stdIn) =>
+        _connection.On<string>("ReceiveStdIn", async (stdIn) =>
         {
             _logger.LogInformation($"Message '{stdIn}' sent at {DateTime.Now}");
+            var stdOut = "Response from device's terminal";
+            await SendStdOut(stdOut);
         });
     }
 

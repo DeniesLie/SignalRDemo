@@ -12,12 +12,12 @@ public class TerminalHub : Hub
     }
     
     // send from device to client
-    public async Task SendStdOut(string user, string stdOut)
-        => await Clients.User(user).SendAsync("receiveStdOut", stdOut);
+    public async Task SendStdOut(string stdOut)
+        => await Clients.Others.SendAsync("receiveStdOut", stdOut);
     
     // send from client to device
-    public async Task SendStdIn(IEnumerable<string> devices, string stdIn)
-        => await Clients.Users(devices).SendAsync("ReceiveStdIn", stdIn);
+    public async Task SendStdIn(string stdIn)
+        => await Clients.Others.SendAsync("ReceiveStdIn", stdIn);
     
     // send from client to multiple devices
     //public async Task SendStdInToMany(string stdIn) 
