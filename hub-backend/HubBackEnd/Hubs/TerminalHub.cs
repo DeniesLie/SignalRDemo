@@ -23,6 +23,7 @@ class TerminalHub : Hub
         var stdInRequest = JsonSerializer.Deserialize<StdInRequest>(stdInRequestStr);
         var toMachines = stdInRequest.ToDevices;
         await Clients.Clients(toMachines).SendAsync("ReceiveStdIn", stdInRequest);
+        _logger.LogInformation("Send stdin from user {0} to devices: {1}", stdInRequest.FromUser, stdInRequest.ToDevices);
     }
 
     public async Task SendStdOut(string stdOutRequestStr)
@@ -30,5 +31,6 @@ class TerminalHub : Hub
         var stdOutRequest = JsonSerializer.Deserialize<StdOutRequest>(stdOutRequestStr);
         var toUser = stdOutRequest.ToUser;
         await Clients.Client(toUser).SendAsync("ReceiveStdIn", stdOutRequest);
+        _logger.LogInformation("Send stdout from device {0} to user {1}", stdOutRequest.FromDevice, toUser);
     }
 }
