@@ -2,7 +2,7 @@ const HEADER_USER = 'lienko_device';
 const HEADER_NONE = '';
 const HEADER_ARROW = '-->';
 
-const connectionUrl = "http://localhost:5000/terminal"
+const connectionUrl = "https://localhost:5000/terminal"
 
 var logSection = document.getElementById('log');
 var input = document.getElementById('input');
@@ -58,8 +58,8 @@ function sendStdIn(stdIn) {
 
 function buildJSONStdinRequest(stdIn) {
     return JSON.stringify({
-        'FromUser': connId,
-        'ToDevices': '*',
+        'FromUser': _connId,
+        'ToDevices': ['*'],
         'StdIn': stdIn
     });
 }
