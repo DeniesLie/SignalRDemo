@@ -1,4 +1,4 @@
-const HEADER_USER = 'lienko_device';
+const HEADER_USER = 'lienko_device: ';
 const HEADER_NONE = '';
 const HEADER_ARROW = '-->';
 
@@ -20,11 +20,12 @@ hubConnection.start().then(function () {
 
 sendBtn.onclick = function () {
     var stdin = input.value;
-    if (stdin == 'clear') clearLog();
-    writeToLog(HEADER_USER, stdin);
-    // send via signalR
-    // receive stdout
-    // writeToLog(HEADER_ARROW, stdout);
+    if (stdin == 'clear') 
+        clearLog();
+    else {
+        writeToLog(HEADER_USER, stdin);
+        sendStdIn(stdin);
+    }
     input.value = '';
 }
 
@@ -34,17 +35,12 @@ window.onbeforeunload = function (){
     hubConnection.stop();   // close connection with server;
 }
 
-// events
-sendBtn.onclick = function () {
-    var stdin = input.value;
-    sendStdIn(stdin);
-};
-
 hubConnection.on("receiveConnId", function(connId) {
     _connId = connId;
 });
 
-hubConnection.on('receiveStdOut', function (stdOut) {
+hubConnection.on('receiveStdOut', function (stdOutResponse) {
+    var stdOut = stdOutResponse.stdOut;
     writeToLog(HEADER_ARROW, stdOut);
 });
 
