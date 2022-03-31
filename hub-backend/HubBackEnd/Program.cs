@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.SignalR;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure logging
@@ -23,4 +21,4 @@ app.MapHub<TerminalHub>("/terminal");
 app.MapGet("/test", () => "It works!");
 
 
-app.Run();
+app.Run("https://localhost:5000");

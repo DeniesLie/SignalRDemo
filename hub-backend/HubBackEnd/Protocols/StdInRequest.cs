@@ -1,8 +1,8 @@
 namespace HubBackEnd.Protocols;
 
-public struct StdInRequest
+public class StdInRequest
 {
-    public string FromUser;
-    public string[] ToDevices;
-    public string StdIn;
+    public string? FromUser { get; set; }
+    public string[]? ToDevices { get; set; }
+    public string? StdIn { get; set; }
 }

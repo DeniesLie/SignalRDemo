@@ -21,16 +21,22 @@ class TerminalHub : Hub
     public async Task SendStdInAsync(string stdInRequestStr)
     {
         var stdInRequest = JsonSerializer.Deserialize<StdInRequest>(stdInRequestStr);
-        var toMachines = stdInRequest.ToDevices;
-        await Clients.Clients(toMachines).SendAsync("ReceiveStdIn", stdInRequest);
-        _logger.LogInformation("Send stdin from user {0} to devices: {1}", stdInRequest.FromUser, stdInRequest.ToDevices);
+        if (stdInRequest != null){
+            var toMachines = stdInRequest.ToDevices;
+            await Clients.Clients(toMachines!).SendAsync("ReceiveStdIn", stdInRequest);
+            _logger.LogInformation("Send stdin from user {0} to devices: {1}", stdInRequest.FromUser, stdInRequest.ToDevices);
+        }
+        _logger.LogError("Wrong stdInReques format");
     }
 
-    public async Task SendStdOut(string stdOutRequestStr)
+    public async Task SendStdOutAsync(string stdOutResponseStr)
     {
-        var stdOutRequest = JsonSerializer.Deserialize<StdOutRequest>(stdOutRequestStr);
-        var toUser = stdOutRequest.ToUser;
-        await Clients.Client(toUser).SendAsync("ReceiveStdIn", stdOutRequest);
-        _logger.LogInformation("Send stdout from device {0} to user {1}", stdOutRequest.FromDevice, toUser);
+        var stdOutResponse = JsonSerializer.Deserialize<StdOutResponse>(stdOutResponseStr);
+        if (stdOutResponse != null){
+            var toUser = stdOutResponse.ToUser;
+            await Clients.Client(toUser!).SendAsync("receiveStdOut", stdOutResponse);
+            _logger.LogInformation("Send stdout from device {0} to user {1}", stdOutResponse.FromDevice, toUser);
+        }
+        _logger.LogError("Wrong stdOutResponse format");
     }
 }
