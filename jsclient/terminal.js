@@ -4,15 +4,18 @@ const HEADER_ARROW = '-->';
 
 const connectionUrl = "http://localhost:5000/terminal"
 
-
 var logSection = document.getElementById('log');
 var input = document.getElementById('input');
 var sendBtn = document.getElementById('send');
+var stateLabel = document.getElementById('conn-state');
 
-// connect to signalR server
+var _connId = null;
+
+// Connect to signalR server
+updateState(); // set intial state(disconnected)
 var hubConnection = new signalR.HubConnectionBuilder().withUrl(connectionUrl).build();
 hubConnection.start().then(function () {
-    
+    updateState();  // trying to connect
 });
 
 sendBtn.onclick = function () {
@@ -27,7 +30,38 @@ sendBtn.onclick = function () {
 
 // close connection on window close
 window.onbeforeunload = function (){
-    // close connection with server;
+    updateState();
+    hubConnection.stop();   // close connection with server;
+}
+
+// events
+sendBtn.onclick = function () {
+    var stdin = input.value;
+    sendStdIn(stdin);
+};
+
+hubConnection.on("receiveConnId", function(connId) {
+    _connId = connId;
+});
+
+hubConnection.on('receiveStdOut', function (stdOut) {
+    writeToLog(HEADER_ARROW, stdOut);
+});
+
+// helper functions
+function sendStdIn(stdIn) {
+    if (stdIn) {
+        var stdinRequest = buildJSONStdinRequest(stdIn);
+        hubConnection.invoke("SendStdInAsync", stdinRequest);
+    }
+}
+
+function buildJSONStdinRequest(stdIn) {
+    return JSON.stringify({
+        'FromUser': connId,
+        'ToDevices': '*',
+        'StdIn': stdIn
+    });
 }
 
 function writeToLog(header, data) {
@@ -35,4 +69,39 @@ function writeToLog(header, data) {
 }
 function clearLog(){
     logSection.innerHTML = '';
+}
+
+function updateState() {
+    function disable() {
+        input.disabled = true;
+        sendBtn.disabled = true;
+    }
+
+    function enable() {
+        input.disabled = false;
+        sendBtn.disabled = false;
+    }
+
+    if (!hubConnection)
+        disable();
+    else {
+        switch (hubConnection.state) {
+            case "Disconnected":
+                stateLabel.innerHTML = '🔴 Disconnected';
+                disable();
+                break;
+            case "Connecting":
+                stateLabel.innerHTML = '🟠 Connecting...';
+                disable();
+                break;
+            case "Connected":
+                stateLabel.innerHTML = '🟢 Connected';
+                enable();
+                break;
+            default:
+                stateLabel.innerHTML = '🤔❓ Unknown connection state';
+                disable();
+                break;
+        }
+    }
 }
